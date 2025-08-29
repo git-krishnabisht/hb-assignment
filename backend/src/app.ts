@@ -22,8 +22,8 @@ app.use(
 );
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 100, 
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
   message: {
     error: "Too Many Requests",
     message: "Too many requests from this IP, please try again later.",
@@ -40,7 +40,7 @@ app.use(passport.initialize());
 app.use("/api/auth", authRoutes);
 app.use("/api/notes", notesRoutes);
 
-app.get("/health", (req, res) => {
+app.get("/health", (_, res) => {
   res.json({
     status: "OK",
     timestamp: new Date().toISOString(),

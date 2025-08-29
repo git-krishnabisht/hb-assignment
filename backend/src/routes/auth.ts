@@ -8,7 +8,7 @@ const router = Router();
 
 const otpLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 5 requests per windowMs
+  max: 1000, // limit each IP to 5 requests per windowMs
   message: {
     error: "Too Many Requests",
     message: "Too many OTP requests. Please try again later.",
