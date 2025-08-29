@@ -4,9 +4,10 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import Database from "./config/database";
-import authRoutes from "./routes/auth";
-import passport from "./config/passport";
+import Database from "./config/database.ts";
+import authRoutes from "./routes/auth.ts";
+import notesRoutes from "./routes/notes.ts";
+import passport from "./config/passport.ts";
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/notes", notesRoutes);
 
 app.get("/health", (req, res) => {
   res.json({

@@ -8,18 +8,29 @@ datasource db {
 }
 
 model User {
-  id              String    @id @default(cuid())
+  id              String   @id @default(cuid())
   name            String?
   dob             DateTime?
-  email           String    @unique
-  password        String?
-  googleId        String?   @unique
-  isEmailVerified Boolean   @default(false)
+  email           String   @unique
+  googleId        String?  @unique
+  isEmailVerified Boolean  @default(false)
   otpCode         String?
   otpExpiry       DateTime?
   refreshToken    String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  @@map("users2")
+  notes           Note[]
+  @@map("users")
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  note      String
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notes")
 }

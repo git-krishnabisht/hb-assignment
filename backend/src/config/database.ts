@@ -30,6 +30,7 @@ class Database {
     const prisma = Database.getInstance();
     await prisma.$disconnect();
   }
+
 }
 
 export default Database;

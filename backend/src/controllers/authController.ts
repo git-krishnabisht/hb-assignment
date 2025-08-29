@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { AuthService } from "../services/authService";
-import { verifyToken } from "../utils/jwt";
-import type { OTPRequest, VerifyOTPRequest } from "../types/auth";
+import { AuthService } from "../services/authService.ts";
+import { verifyToken } from "../utils/jwt.ts";
+import type { OTPRequest, VerifyOTPRequest } from "../types/auth.ts";
 
 export class AuthController {
   static async sendOTP(req: Request<{}, {}, OTPRequest>, res: Response) {

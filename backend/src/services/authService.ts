@@ -1,9 +1,8 @@
-import { prisma } from "../lib/prisma";
-import { generateOTP, getOTPExpiry, isOTPValid } from "../utils/otp";
-import { generateTokens } from "../utils/jwt";
-import { sendOTPEmail } from "../utils/email";
-import { hashPassword, comparePassword } from "../utils/password";
-import type { User } from "../types/auth";
+import { prisma } from "../lib/prisma.ts";
+import { generateOTP, getOTPExpiry, isOTPValid } from "../utils/otp.ts";
+import { generateTokens } from "../utils/jwt.ts";
+import { sendOTPEmail } from "../utils/email.ts";
+import type { User } from "../types/auth.ts";
 
 export class AuthService {
   static async sendOTP(email: string): Promise<{ message: string }> {
