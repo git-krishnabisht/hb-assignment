@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import type { AuthTokens } from "../types/auth";
+import type { AuthTokens } from "../types/auth.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-key";
 const JWT_REFRESH_SECRET = "your-refresh-secret-key";

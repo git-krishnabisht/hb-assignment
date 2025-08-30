@@ -4,10 +4,10 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import Database from "./config/database";
-import authRoutes from "./routes/auth";
-import notesRoutes from "./routes/notes";
-import passport from "./config/passport";
+import Database from "./config/database.js";
+import authRoutes from "./routes/auth.js";
+import notesRoutes from "./routes/notes.js";
+import passport from "./config/passport.js";
 
 dotenv.config();
 

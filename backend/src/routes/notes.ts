@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { NotesController } from "../controllers/notesController";
-import { authenticateJWT } from "../middleware/auth";
+import { NotesController } from "../controllers/notesController.js";
+import { authenticateJWT } from "../middleware/auth.js";
 
 const router = Router();
 
