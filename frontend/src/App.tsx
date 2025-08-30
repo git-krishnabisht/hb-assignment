@@ -42,40 +42,7 @@ export default function App() {
 
   const initializeAuth = useCallback(async () => {
     try {
-      const storedToken = tokenManager.getToken();
-      const storedUser = tokenManager.getUser();
-
-      if (storedToken && storedUser) {
-        setAuthState((prev) => ({
-          ...prev,
-          user: storedUser,
-          accessToken: storedToken,
-          isAuthenticated: true,
-          isLoading: true,
-          isInitialized: false,
-        }));
-        setCurrentView("dashboard");
-
-        try {
-          const response = await api.getMe();
-          if (response.user) {
-            tokenManager.setUser(response.user);
-            setAuthState({
-              user: response.user,
-              accessToken: storedToken,
-              isAuthenticated: true,
-              isLoading: false,
-              isInitialized: true,
-            });
-            return;
-          }
-        } catch (error) {
-          console.error("Token verification failed:", error);
-          tokenManager.clearToken();
-          console.log("debug point 6");
-        }
-      }
-
+      // First check for token from URL (OAuth callback)
       const urlParams = new URLSearchParams(window.location.search);
       const tokenFromUrl = urlParams.get("token");
 
@@ -104,10 +71,50 @@ export default function App() {
         } catch (error) {
           console.error("OAuth token verification failed:", error);
           tokenManager.clearToken();
-          console.log("debug point 8");
         }
       }
 
+      // Check for existing stored token
+      const storedToken = tokenManager.getToken();
+      const storedUser = tokenManager.getUser();
+
+      if (storedToken && storedUser) {
+        // Set authenticated state first with stored data
+        setAuthState({
+          user: storedUser,
+          accessToken: storedToken,
+          isAuthenticated: true,
+          isLoading: false, // Set loading to false immediately with stored data
+          isInitialized: true,
+        });
+        setCurrentView("dashboard");
+
+        // Then verify in background without affecting UI state
+        try {
+          const response = await api.getMe();
+          if (response.user) {
+            // Update with fresh user data if verification succeeds
+            tokenManager.setUser(response.user);
+            setAuthState((prev) => ({
+              ...prev,
+              user: response.user,
+            }));
+          }
+        } catch (error) {
+          console.error("Background token verification failed:", error);
+          // Only logout if it's a definitive auth error, not network issues
+          if (
+            error instanceof Error &&
+            error.message.includes("Authentication failed")
+          ) {
+            handleLogoutInternal();
+          }
+          // For other errors (network, server issues), keep the user logged in with stored data
+        }
+        return;
+      }
+
+      // No stored token, show sign-in
       setAuthState({
         user: null,
         accessToken: null,
@@ -118,8 +125,7 @@ export default function App() {
       setCurrentView("signin");
     } catch (error) {
       console.error("Auth initialization error:", error);
-      tokenManager.clearToken();
-      console.log("debug point 7");
+      // Only clear token if we're sure it's an auth issue
       setAuthState({
         user: null,
         accessToken: null,
@@ -130,6 +136,18 @@ export default function App() {
       setCurrentView("signin");
     }
   }, []);
+
+  const handleLogoutInternal = () => {
+    tokenManager.clearToken();
+    setAuthState({
+      user: null,
+      accessToken: null,
+      isAuthenticated: false,
+      isLoading: false,
+      isInitialized: true,
+    });
+    setCurrentView("signin");
+  };
 
   useEffect(() => {
     initializeAuth();
@@ -149,7 +167,13 @@ export default function App() {
           }
         } catch (error) {
           console.error("Background token refresh failed:", error);
-          handleLogout();
+          // Only logout on definitive auth failures, not network issues
+          if (
+            error instanceof Error &&
+            error.message.includes("Authentication failed")
+          ) {
+            handleLogout();
+          }
         }
       }
     }, 60000);
@@ -176,19 +200,11 @@ export default function App() {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      tokenManager.clearToken();
-      console.log("debug point 9");
-      setAuthState({
-        user: null,
-        accessToken: null,
-        isAuthenticated: false,
-        isLoading: false,
-        isInitialized: true,
-      });
-      setCurrentView("signin");
+      handleLogoutInternal();
     }
   };
 
+  // Show loading only when not initialized
   if (!authState.isInitialized) {
     return <LoadingSpinner />;
   }

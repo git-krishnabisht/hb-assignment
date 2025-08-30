@@ -34,7 +34,6 @@ export const api = {
       token = await api.refreshTokens();
       if (!token) {
         tokenManager.clearToken();
-        console.log("debug point 1");
         throw new Error("Authentication failed");
       }
     }
@@ -53,7 +52,6 @@ export const api = {
       token = await api.refreshTokens();
       if (!token) {
         tokenManager.clearToken();
-        console.log("debug point 2");
         throw new Error("Authentication failed");
       }
 
@@ -146,13 +144,27 @@ export const api = {
   },
 
   getMe: async () => {
-    const response = await api.makeAuthenticatedRequest(`${API_BASE}/auth/me`);
+    try {
+      const response = await api.makeAuthenticatedRequest(
+        `${API_BASE}/auth/me`
+      );
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      if (!response.ok) {
+        // Distinguish between auth errors and other errors
+        if (response.status === 401) {
+          throw new Error("Authentication failed");
+        }
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      // Re-throw with more specific error information
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Network error occurred");
     }
-
-    return response.json();
   },
 
   logout: async () => {
@@ -165,10 +177,10 @@ export const api = {
       );
       return response.ok;
     } catch (error) {
+      // Even if logout fails on server, clear local state
       return true;
     } finally {
       tokenManager.clearToken();
-      console.log("debug point 3");
     }
   },
 
@@ -185,6 +197,9 @@ export const api = {
     );
 
     if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("Authentication failed");
+      }
       throw new Error(`HTTP ${response.status}`);
     }
 
@@ -197,6 +212,9 @@ export const api = {
     );
 
     if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("Authentication failed");
+      }
       throw new Error(`HTTP ${response.status}`);
     }
 
@@ -216,6 +234,9 @@ export const api = {
     );
 
     if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("Authentication failed");
+      }
       throw new Error(`HTTP ${response.status}`);
     }
 
