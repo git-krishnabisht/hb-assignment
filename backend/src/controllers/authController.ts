@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { AuthService } from "../services/authService.ts";
-import { verifyToken } from "../utils/jwt.ts";
+import { AuthService } from "../services/authService";
+import { verifyToken } from "../utils/jwt";
 import type {
   OTPRequest,
   VerifyOTPRequest,

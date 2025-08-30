@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma.ts";
+import { prisma } from "../lib/prisma";
 import type { Request, Response } from "express";
 
 export class NotesController {

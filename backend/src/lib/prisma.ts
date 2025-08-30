@@ -1,3 +1,3 @@
-import Database from "../config/database.ts";
+import Database from "../config/database";
 
 export const prisma = Database.getInstance();

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { NotesController } from "../controllers/notesController.ts";
-import { authenticateJWT } from "../middleware/auth.ts";
+import { NotesController } from "../controllers/notesController";
+import { authenticateJWT } from "../middleware/auth";
 
 const router = Router();
 

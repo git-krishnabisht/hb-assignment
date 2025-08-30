@@ -1,7 +1,7 @@
 import { Router } from "express";
-import passport from "../config/passport.ts";
-import { AuthController } from "../controllers/authController.ts";
-import { authenticateJWT } from "../middleware/auth.ts";
+import passport from "../config/passport";
+import { AuthController } from "../controllers/authController";
+import { authenticateJWT } from "../middleware/auth";
 import rateLimit from "express-rate-limit";
 
 const router = Router();

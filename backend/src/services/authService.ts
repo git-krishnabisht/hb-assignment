@@ -1,8 +1,8 @@
-import { prisma } from "../lib/prisma.ts";
-import { generateOTP, getOTPExpiry, isOTPValid } from "../utils/otp.ts";
-import { generateTokens } from "../utils/jwt.ts";
-import { sendSignupOTPEmail, sendSigninOTPEmail } from "../utils/email.ts";
-import type { User } from "../types/auth.ts";
+import { prisma } from "../lib/prisma";
+import { generateOTP, getOTPExpiry, isOTPValid } from "../utils/otp";
+import { generateTokens } from "../utils/jwt";
+import { sendSignupOTPEmail, sendSigninOTPEmail } from "../utils/email";
+import type { User } from "../types/auth";
 
 export class AuthService {
   static async signupWithOTP(
